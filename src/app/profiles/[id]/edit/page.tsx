@@ -1,47 +1,70 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import RichTextEditor from "../../../components/RichTextEditor";
-import PhotoUpload from "../../../components/PhotoUpload";
+import { useParams, useRouter } from "next/navigation";
+// import PhotoUpload from "../../../../../components/PhotoUpload";
 import axios from "axios";
+import RichTextEditor from "../../../../../components/RichTextEditor";
 
 export default function EditProfilePage() {
   const router = useRouter();
-  const { id } = router.query;
+  const params = useParams();
+  const id = params?.id;
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [photo, setPhoto] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : "";
 
   useEffect(() => {
     if (!id) return;
-    axios
-      .get(`/api/profiles/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(`/api/profiles/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = res.data;
-        setFirstName(data.firstName);
-        setLastName(data.lastName);
-        setBirthDate(data.birthDate.split("T")[0]);
-        setPhoto(data.photo);
-        setDescription(data.description);
-      });
-  }, [id]);
+        setFirstName(data.firstName || "");
+        setLastName(data.lastName || "");
+        setBirthDate(data.birthDate ? data.birthDate.split("T")[0] : "");
+        setPhoto(data.photo || "");
+        setDescription(data.description || "");
+      } catch (err: any) {
+        console.error("Error fetching profile:", err);
+        setError(err.response?.data?.error || "Failed to fetch profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [id, token]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    await axios.put(
-      `/api/profiles/${id}`,
-      { firstName, lastName, birthDate, photo, description },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    router.push("/profiles");
+    if (!id) return;
+
+    try {
+      await axios.put(
+        `/api/profiles/${id}`,
+        { firstName, lastName, birthDate, photo, description },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      router.push("/profiles");
+    } catch (err: any) {
+      console.error("Error updating profile:", err);
+      setError(err.response?.data?.error || "Failed to update profile");
+    }
   };
+
+  if (loading) return <p className="p-6">Loading...</p>;
+  if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
@@ -65,7 +88,7 @@ export default function EditProfilePage() {
           value={birthDate}
           onChange={(e) => setBirthDate(e.target.value)}
         />
-        <PhotoUpload onUpload={setPhoto} />
+        {/* <PhotoUpload onUpload={setPhoto} /> */}
         <RichTextEditor value={description} onChange={setDescription} />
         <button className="bg-green-500 text-white p-2 rounded w-full">
           Save Changes
