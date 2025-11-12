@@ -1,25 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "../../../../lib/auth";
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../lib/prisma";
+import { getUserFromToken } from "../../../lib/apiHelpers";
 
 export async function GET(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const decoded = verifyToken(token) as any;
-    if (!decoded)
+    const user = await getUserFromToken(req);
+    if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const profiles = await prisma.userProfile.findMany({
-      where: { userId: decoded.userId },
+      where: { userId: user.userId },
     });
-
     return NextResponse.json(profiles);
-  } catch (err) {
-    console.error("ERROR /api/profiles GET:", err);
+  } catch (err: any) {
+    console.error("GET /profiles error:", err.message);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -29,17 +23,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const decoded = verifyToken(token) as any;
-    if (!decoded || !decoded.userId)
+    const user = await getUserFromToken(req);
+    if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const data = await req.json();
-
     if (!data.firstName || !data.lastName || !data.birthDate) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -54,15 +42,15 @@ export async function POST(req: NextRequest) {
         birthDate: new Date(data.birthDate),
         photo: data.photo || "",
         description: data.description || "",
-        userId: decoded.userId,
+        userId: user.userId,
       },
     });
 
     return NextResponse.json(newProfile);
   } catch (err: any) {
-    console.error("ERROR /api/profiles POST:", err.message);
+    console.error("POST /profiles error:", err.message);
     return NextResponse.json(
-      { error: "Server error", details: err.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

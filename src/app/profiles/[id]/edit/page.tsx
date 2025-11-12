@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 // import PhotoUpload from "../../../../../components/PhotoUpload";
 import axios from "axios";
-import RichTextEditor from "../../../../../components/RichTextEditor";
+import RichTextEditor from "../../../../components/RichTextEditor";
 
 export default function EditProfilePage() {
   const router = useRouter();

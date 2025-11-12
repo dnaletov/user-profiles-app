@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 // import RichTextEditor from "../../components/RichTextEditor";
 // import PhotoUpload from "../../components/PhotoUpload";
 import axios from "axios";
-import RichTextEditor from "../../../../components/RichTextEditor";
+import RichTextEditor from "../../../components/RichTextEditor";
 
 export default function CreateProfilePage() {
   const router = useRouter();
@@ -18,7 +18,6 @@ export default function CreateProfilePage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    console.log({ token });
 
     await axios.post(
       "/api/profiles",

@@ -1,34 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "../../../../../lib/auth";
-import prisma from "../../../../../lib/prisma";
+import prisma from "../../../../lib/prisma";
+import {
+  getUserFromToken,
+  invalidId,
+  notFound,
+  forbidden,
+} from "../../../../lib/apiHelpers";
 
 export async function GET(req: NextRequest, context: any) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const decoded = verifyToken(token) as any;
-    if (!decoded)
+    const user = await getUserFromToken(req);
+    if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const params = await context.params;
     const id = parseInt(params.id, 10);
-    if (isNaN(id))
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    if (isNaN(id)) return invalidId();
 
     const profile = await prisma.userProfile.findUnique({ where: { id } });
-    if (!profile)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    if (profile.userId !== decoded.userId)
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (!profile) return notFound();
+    if (profile.userId !== user.userId) return forbidden();
 
     return NextResponse.json(profile);
   } catch (err: any) {
-    console.error("ERROR in GET /api/profiles/[id]:", err.message);
+    console.error("GET /profiles/[id] error:", err.message);
     return NextResponse.json(
-      { error: "Internal server error", details: err.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
@@ -36,29 +33,20 @@ export async function GET(req: NextRequest, context: any) {
 
 export async function PUT(req: NextRequest, context: any) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const decoded = verifyToken(token) as any;
-    if (!decoded)
+    const user = await getUserFromToken(req);
+    if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const params = await context.params;
     const id = parseInt(params.id, 10);
-    if (isNaN(id))
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    if (isNaN(id)) return invalidId();
 
     const data = await req.json();
+    const profile = await prisma.userProfile.findUnique({ where: { id } });
+    if (!profile) return notFound();
+    if (profile.userId !== user.userId) return forbidden();
 
-    const existing = await prisma.userProfile.findUnique({ where: { id } });
-    if (!existing)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    if (existing.userId !== decoded.userId)
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
-    const updatedProfile = await prisma.userProfile.update({
+    const updated = await prisma.userProfile.update({
       where: { id },
       data: {
         firstName: data.firstName,
@@ -69,11 +57,11 @@ export async function PUT(req: NextRequest, context: any) {
       },
     });
 
-    return NextResponse.json(updatedProfile);
+    return NextResponse.json(updated);
   } catch (err: any) {
-    console.error("ERROR in PUT /api/profiles/[id]:", err.message);
+    console.error("PUT /profiles/[id] error:", err.message);
     return NextResponse.json(
-      { error: "Internal server error", details: err.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
@@ -81,33 +69,24 @@ export async function PUT(req: NextRequest, context: any) {
 
 export async function DELETE(req: NextRequest, context: any) {
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const token = authHeader.replace("Bearer ", "");
-    const decoded = verifyToken(token) as any;
-    if (!decoded)
+    const user = await getUserFromToken(req);
+    if (!user)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const params = await context.params;
     const id = parseInt(params.id, 10);
-    if (isNaN(id))
-      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    if (isNaN(id)) return invalidId();
 
-    const existing = await prisma.userProfile.findUnique({ where: { id } });
-    if (!existing)
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    if (existing.userId !== decoded.userId)
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const profile = await prisma.userProfile.findUnique({ where: { id } });
+    if (!profile) return notFound();
+    if (profile.userId !== user.userId) return forbidden();
 
     await prisma.userProfile.delete({ where: { id } });
-
     return NextResponse.json({ message: "Profile deleted" });
   } catch (err: any) {
-    console.error("ERROR in DELETE /api/profiles/[id]:", err.message);
+    console.error("DELETE /profiles/[id] error:", err.message);
     return NextResponse.json(
-      { error: "Internal server error", details: err.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PhotoUpload from "./PhotoUpload";
+// import PhotoUpload from "./PhotoUpload";
 import RichTextEditor from "./RichTextEditor";
 
 interface Props {
@@ -59,7 +59,7 @@ const ProfileForm: React.FC<Props> = ({
         onChange={(e) => setBirthDate(e.target.value)}
         required
       />
-      <PhotoUpload onUpload={setPhoto} value={photo} />
+      {/* <PhotoUpload onUpload={setPhoto} value={photo} /> */}
       <RichTextEditor value={description} onChange={setDescription} />
       <button className="bg-blue-500 text-white p-2 rounded w-full">
         {submitLabel}

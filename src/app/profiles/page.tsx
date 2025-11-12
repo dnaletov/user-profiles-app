@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import ProfileCard from "../../../components/ProfileCard";
+import ProfileCard from "../../components/ProfileCard";
 
 export default function ProfilesPage() {
   const [profiles, setProfiles] = useState<any[]>([]);
@@ -15,7 +15,6 @@ export default function ProfilesPage() {
   const fetchProfiles = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log({ token });
 
       const res = await axios.get("/api/profiles", {
         headers: { Authorization: `Bearer ${token}` },
