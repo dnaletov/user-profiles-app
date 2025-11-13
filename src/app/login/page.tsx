@@ -1,23 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const res = await axios.post("/api/auth/login", { email, password });
       localStorage.setItem("token", res.data.token);
       router.push("/profiles");
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Something went wrong");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const errorMessage = err.response?.data?.error;
+        setError(errorMessage);
+      } else {
+        setError("Something went wrong");
+      }
     }
   };
 

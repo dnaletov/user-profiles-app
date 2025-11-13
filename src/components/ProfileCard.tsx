@@ -1,19 +1,7 @@
+import { Profile } from "@/app/types/profile";
 import React from "react";
 
-interface Profile {
-  id: number;
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-  photo?: string;
-  description?: string;
-}
-
-interface Props {
-  profile: Profile;
-}
-
-const ProfileCard: React.FC<Props> = ({ profile }) => {
+const ProfileCard: React.FC<{ profile: Profile }> = ({ profile }) => {
   return (
     <div className="border p-4 rounded shadow">
       {profile.photo && (

@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import ProfileCard from "../../components/ProfileCard";
+import { Profile } from "../types/profile";
 
 export default function ProfilesPage() {
-  const [profiles, setProfiles] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const token =
@@ -20,8 +22,13 @@ export default function ProfilesPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProfiles(res.data);
+      setError(null);
     } catch (err) {
-      console.error(err);
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.error || "Something went wrong");
+      } else {
+        setError("Unknown error occurred");
+      }
     }
   };
 
@@ -31,15 +38,26 @@ export default function ProfilesPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this profile?")) return;
-    await axios.delete(`/api/profiles/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    fetchProfiles();
+    try {
+      await axios.delete(`/api/profiles/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchProfiles();
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.error || "Failed to delete profile");
+      } else {
+        setError("Unknown error occurred while deleting the profile");
+      }
+    }
   };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Profiles</h1>
+
+      {error && <div className="text-red-500 mb-4">{error}</div>}
+
       <div className="grid grid-cols-3 gap-4">
         {profiles.map((p) => (
           <div key={p.id} className="border p-4 rounded shadow">
