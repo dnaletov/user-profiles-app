@@ -1,7 +1,7 @@
 export interface ProfileData {
   firstName: string;
   lastName: string;
-  birthDate: string | Date;
+  birthDate: string;
   photo?: string | null;
   description?: string;
 }

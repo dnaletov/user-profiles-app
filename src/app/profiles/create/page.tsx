@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-// import RichTextEditor from "../../components/RichTextEditor";
 // import PhotoUpload from "../../components/PhotoUpload";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import RichTextEditor from "../../../components/RichTextEditor";
 
 export default function CreateProfilePage() {
@@ -15,16 +14,24 @@ export default function CreateProfilePage() {
   const [photo, setPhoto] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
 
-    await axios.post(
-      "/api/profiles",
-      { firstName, lastName, birthDate, photo, description },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    router.push("/profiles");
+    try {
+      await axios.post(
+        "/api/profiles",
+        { firstName, lastName, birthDate, photo, description },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      router.push("/profiles");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.error(err.response?.data?.error);
+      } else {
+        console.error("Unexpected error", err);
+      }
+    }
   };
 
   return (

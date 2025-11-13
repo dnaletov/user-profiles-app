@@ -1,21 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 // import PhotoUpload from "../../../../../components/PhotoUpload";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import RichTextEditor from "../../../../components/RichTextEditor";
+import { Profile, ProfileData } from "@/app/types/profile";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id;
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [photo, setPhoto] = useState("");
-  const [description, setDescription] = useState("");
+  const [formData, setFormData] = useState<ProfileData>({
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    photo: "",
+    description: "",
+  });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -26,18 +30,24 @@ export default function EditProfilePage() {
     if (!id) return;
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`/api/profiles/${id}`, {
+        const res = await axios.get<Profile>(`/api/profiles/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = res.data;
-        setFirstName(data.firstName || "");
-        setLastName(data.lastName || "");
-        setBirthDate(data.birthDate ? data.birthDate.split("T")[0] : "");
-        setPhoto(data.photo || "");
-        setDescription(data.description || "");
-      } catch (err: any) {
+        setFormData({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          birthDate: data.birthDate.split("T")[0],
+          photo: data.photo || "",
+          description: data.description || "",
+        });
+      } catch (err) {
+        if (err instanceof AxiosError) {
+          setError(err.response?.data?.error);
+        } else {
+          setError("An unexpected error occurred");
+        }
         console.error("Error fetching profile:", err);
-        setError(err.response?.data?.error || "Failed to fetch profile");
       } finally {
         setLoading(false);
       }
@@ -46,21 +56,27 @@ export default function EditProfilePage() {
     fetchProfile();
   }, [id, token]);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!id) return;
 
     try {
-      await axios.put(
-        `/api/profiles/${id}`,
-        { firstName, lastName, birthDate, photo, description },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`/api/profiles/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       router.push("/profiles");
-    } catch (err: any) {
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.error);
+      } else {
+        setError("An unexpected error occurred");
+      }
       console.error("Error updating profile:", err);
-      setError(err.response?.data?.error || "Failed to update profile");
     }
+  };
+
+  const handleChange = (field: keyof ProfileData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   if (loading) return <p className="p-6">Loading...</p>;
@@ -73,23 +89,26 @@ export default function EditProfilePage() {
         <input
           className="border p-2 w-full"
           placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          value={formData.firstName}
+          onChange={(e) => handleChange("firstName", e.target.value)}
         />
         <input
           className="border p-2 w-full"
           placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          value={formData.lastName}
+          onChange={(e) => handleChange("lastName", e.target.value)}
         />
         <input
           className="border p-2 w-full"
           type="date"
-          value={birthDate}
-          onChange={(e) => setBirthDate(e.target.value)}
+          value={formData.birthDate}
+          onChange={(e) => handleChange("birthDate", e.target.value)}
         />
-        {/* <PhotoUpload onUpload={setPhoto} /> */}
-        <RichTextEditor value={description} onChange={setDescription} />
+        {/* <PhotoUpload onUpload={(val) => handleChange("photo", val)} /> */}
+        <RichTextEditor
+          value={formData.description || ""}
+          onChange={(val) => handleChange("description", val)}
+        />
         <button className="bg-green-500 text-white p-2 rounded w-full">
           Save Changes
         </button>

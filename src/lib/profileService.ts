@@ -28,13 +28,13 @@ export async function updateProfile(id: number, data: ProfileData) {
     data: {
       firstName: data.firstName,
       lastName: data.lastName,
-      birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
+      birthDate: new Date(data.birthDate),
       photo: data.photo || "",
       description: data.description || "",
     },
   });
 }
 
-export async function deleteProfile(id: number): Promise<Profile> {
-  return prisma.userProfile.delete({ where: { id } });
+export async function deleteProfile(id: number): Promise<void> {
+  await prisma.userProfile.delete({ where: { id } });
 }
