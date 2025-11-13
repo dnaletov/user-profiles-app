@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
@@ -16,9 +16,9 @@ export const signToken = (payload: object) => {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 };
 
-export const verifyToken = (token: string) => {
+export const verifyToken = (token: string): JwtPayload | null => {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET) as JwtPayload;
   } catch (err) {
     return null;
   }

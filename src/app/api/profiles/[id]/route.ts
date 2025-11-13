@@ -1,93 +1,65 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma";
 import {
-  getUserFromToken,
+  withErrorHandling,
+  requireUser,
   invalidId,
   notFound,
   forbidden,
 } from "../../../../lib/apiHelpers";
+import {
+  getProfileById,
+  updateProfile,
+  deleteProfile,
+} from "../../../../lib/profileService";
 
-export async function GET(req: NextRequest, context: any) {
-  try {
-    const user = await getUserFromToken(req);
-    if (!user)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+type Context = {
+  params: { id: string };
+};
 
-    const params = await context.params;
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) return invalidId();
+export const GET = withErrorHandling(
+  async (req: NextRequest, { params }: Context) => {
+    const user = await requireUser(req);
+    const { id } = await params;
+    const profileId = parseInt(id, 10);
+    if (isNaN(profileId)) return invalidId();
 
-    const profile = await prisma.userProfile.findUnique({ where: { id } });
+    const profile = await getProfileById(profileId);
     if (!profile) return notFound();
     if (profile.userId !== user.userId) return forbidden();
 
     return NextResponse.json(profile);
-  } catch (err: any) {
-    console.error("GET /profiles/[id] error:", err.message);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
   }
-}
+);
 
-export async function PUT(req: NextRequest, context: any) {
-  try {
-    const user = await getUserFromToken(req);
-    if (!user)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export const PUT = withErrorHandling(
+  async (req: NextRequest, { params }: Context) => {
+    const user = await requireUser(req);
+    const { id } = await params;
+    const profileId = parseInt(id, 10);
+    if (isNaN(profileId)) return invalidId();
 
-    const params = await context.params;
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) return invalidId();
+    const profile = await getProfileById(profileId);
+    if (!profile) return notFound();
+    if (profile.userId !== user.userId) return forbidden();
 
     const data = await req.json();
-    const profile = await prisma.userProfile.findUnique({ where: { id } });
-    if (!profile) return notFound();
-    if (profile.userId !== user.userId) return forbidden();
-
-    const updated = await prisma.userProfile.update({
-      where: { id },
-      data: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
-        photo: data.photo || "",
-        description: data.description || "",
-      },
-    });
-
+    const updated = await updateProfile(profileId, data);
     return NextResponse.json(updated);
-  } catch (err: any) {
-    console.error("PUT /profiles/[id] error:", err.message);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
   }
-}
+);
 
-export async function DELETE(req: NextRequest, context: any) {
-  try {
-    const user = await getUserFromToken(req);
-    if (!user)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export const DELETE = withErrorHandling(
+  async (req: NextRequest, { params }: Context) => {
+    const user = await requireUser(req);
+    const { id } = await params;
+    const profileId = parseInt(id, 10);
+    if (isNaN(profileId)) return invalidId();
 
-    const params = await context.params;
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) return invalidId();
-
-    const profile = await prisma.userProfile.findUnique({ where: { id } });
+    const profile = await getProfileById(profileId);
     if (!profile) return notFound();
     if (profile.userId !== user.userId) return forbidden();
 
-    await prisma.userProfile.delete({ where: { id } });
+    await deleteProfile(profileId);
     return NextResponse.json({ message: "Profile deleted" });
-  } catch (err: any) {
-    console.error("DELETE /profiles/[id] error:", err.message);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
   }
-}
+);
