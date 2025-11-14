@@ -30,14 +30,30 @@ export function errorResponse(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
 }
 
-export async function getUserFromToken(req: NextRequest): Promise<User | null> {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader) return null;
-  const token = authHeader.replace("Bearer ", "");
-  const decoded = verifyToken(token) as JwtPayload;
-  if (!decoded) return null;
+export async function getUserFromRequest(
+  req: NextRequest
+): Promise<User | null> {
+  const cookieToken = req.cookies.get("token")?.value;
+  console.log("[AUTH] cookie token:", cookieToken || "no cookie");
 
-  return { userId: decoded.userId || decoded.id };
+  if (cookieToken) {
+    const decoded = verifyToken(cookieToken) as JwtPayload;
+
+    if (decoded?.userId || decoded?.id) {
+      return { userId: decoded.userId || decoded.id };
+    }
+  }
+
+  const authHeader = req.headers.get("authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.replace("Bearer ", "");
+    const decoded = verifyToken(token) as JwtPayload;
+
+    if (decoded?.userId || decoded?.id) {
+      return { userId: decoded.userId || decoded.id };
+    }
+  }
+  return null;
 }
 
 export async function getProfileById(id: number) {
@@ -54,7 +70,7 @@ export function withErrorHandling(
       if (err instanceof Error) {
         console.error(`${req.method} ${req.url} error:`, err.message);
       } else {
-        console.error(`${req.method} ${req.url} unknown error`);
+        console.error(`${req.method} ${req.url} unknown error`, err);
       }
       return errorResponse("Internal server error", 500);
     }
@@ -62,7 +78,11 @@ export function withErrorHandling(
 }
 
 export async function requireUser(req: NextRequest): Promise<User> {
-  const user = await getUserFromToken(req);
-  if (!user) throw { status: 401, message: "Unauthorized" };
+  const user = await getUserFromRequest(req);
+
+  if (!user) {
+    throw { status: 401, message: "Unauthorized" };
+  }
+
   return user;
 }

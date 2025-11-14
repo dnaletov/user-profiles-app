@@ -13,7 +13,11 @@ export default function RegisterPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("/api/auth/register", { email, password });
+      await axios.post(
+        "/api/auth/register",
+        { email, password },
+        { withCredentials: true }
+      );
       router.push("/login");
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -48,6 +52,12 @@ export default function RegisterPage() {
         <button className="bg-blue-500 text-white p-2 rounded w-full">
           Register
         </button>
+        <p
+          className="text-blue-500 cursor-pointer mt-3 text-center"
+          onClick={() => router.push("/login")}
+        >
+          Already have an account?
+        </p>
       </form>
     </div>
   );

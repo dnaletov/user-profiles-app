@@ -11,43 +11,50 @@ export default function ProfilesPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : "";
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
 
   const fetchProfiles = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get("/api/profiles", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get("/api/profiles", { withCredentials: true });
       setProfiles(res.data);
       setError(null);
     } catch (err) {
       if (err instanceof AxiosError) {
-        setError(err.response?.data?.error || "Something went wrong");
+        setError(err.response?.data?.error);
+        if (err.response?.status === 401) {
+          router.replace("/login");
+        }
       } else {
         setError("Unknown error occurred");
       }
     }
   };
 
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
-
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this profile?")) return;
     try {
-      await axios.delete(`/api/profiles/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(`/api/profiles/${id}`, { withCredentials: true });
       fetchProfiles();
     } catch (err) {
       if (err instanceof AxiosError) {
-        setError(err.response?.data?.error || "Failed to delete profile");
+        setError(err.response?.data?.error);
       } else {
         setError("Unknown error occurred while deleting the profile");
+      }
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      router.replace("/login");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.error);
+      } else {
+        setError("Unknown error occurred");
       }
     }
   };
@@ -76,6 +83,12 @@ export default function ProfilesPage() {
                 Delete
               </button>
             </div>
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-3 py-2 rounded mt-3"
+            >
+              Logout
+            </button>
           </div>
         ))}
       </div>

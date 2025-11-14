@@ -13,7 +13,11 @@ export default function LoginPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/auth/login", { email, password });
+      const res = await axios.post(
+        "/api/auth/login",
+        { email, password },
+        { withCredentials: true }
+      );
       localStorage.setItem("token", res.data.token);
       router.push("/profiles");
     } catch (err) {
@@ -50,6 +54,12 @@ export default function LoginPage() {
         <button className="bg-blue-500 text-white p-2 rounded w-full">
           Login
         </button>
+        <p
+          className="text-blue-500 cursor-pointer mt-3 text-center"
+          onClick={() => router.push("/register")}
+        >
+          Create account
+        </p>
       </form>
     </div>
   );

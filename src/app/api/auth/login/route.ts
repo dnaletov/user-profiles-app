@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signToken, verifyPassword } from "../../../../lib/auth";
-import { findUserByEmail } from "../../../../lib/userService";
-import { errorResponse, withErrorHandling } from "../../../../lib/apiHelpers";
+import { signToken, verifyPassword } from "@/lib/auth";
+import { findUserByEmail } from "@/lib/userService";
+import { errorResponse, withErrorHandling } from "@/lib/apiHelpers";
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
   const { email, password } = await req.json();
@@ -13,5 +13,18 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
   if (!isValid) return errorResponse("Invalid credentials", 401);
 
   const token = signToken({ userId: user.id });
-  return NextResponse.json({ user: { id: user.id, email: user.email }, token });
+  const res = NextResponse.json({
+    user: { id: user.id, email: user.email },
+    token,
+  });
+
+  res.cookies.set("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  return res;
 });
