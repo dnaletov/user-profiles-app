@@ -1,64 +1,33 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { validateEmail, validatePassword } from "@/utils/validation";
+import AuthForm from "../../components/AuthForm";
+import axios from "axios";
 import { useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      await axios.post(
-        "/api/auth/register",
-        { email, password },
-        { withCredentials: true }
-      );
-      router.push("/login");
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.error);
-      } else {
-        setError("Something went wrong");
-      }
-    }
+  const handleRegister = async (email: string, password: string) => {
+    validateEmail(email);
+    validatePassword(password);
+
+    await axios.post(
+      "/api/auth/register",
+      { email, password },
+      { withCredentials: true }
+    );
+
+    router.push("/login");
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <form
-        className="bg-white p-6 rounded shadow-md w-96"
-        onSubmit={handleSubmit}
-      >
-        <h1 className="text-2xl font-bold mb-4">Register</h1>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
-        <input
-          className="border p-2 mb-2 w-full"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="border p-2 mb-4 w-full"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="bg-blue-500 text-white p-2 rounded w-full">
-          Register
-        </button>
-        <p
-          className="text-blue-500 cursor-pointer mt-3 text-center"
-          onClick={() => router.push("/login")}
-        >
-          Already have an account?
-        </p>
-      </form>
-    </div>
+    <AuthForm
+      title="Register"
+      submitText="Register"
+      onSubmit={handleRegister}
+      footerText="Already have an account?"
+      footerAction={() => router.push("/login")}
+    />
   );
 }

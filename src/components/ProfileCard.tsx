@@ -1,25 +1,56 @@
-import { Profile } from "@/app/types/profile";
-import React from "react";
+"use client";
 
-const ProfileCard: React.FC<{ profile: Profile }> = ({ profile }) => {
+import { Profile } from "@/app/types/profile";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+
+export default function ProfileCard({
+  profile,
+  onDelete,
+}: {
+  profile: Profile;
+  onDelete: () => void;
+}) {
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    if (!confirm("Delete this profile?")) return;
+
+    await axios.delete(`/api/profiles/${profile.id}`, {
+      withCredentials: true,
+    });
+
+    onDelete();
+  };
+
   return (
-    <div className="border p-4 rounded shadow">
-      {profile.photo && (
-        <img
-          src={profile.photo}
-          alt={`${profile.firstName} ${profile.lastName}`}
-          className="w-full h-40 object-cover rounded mb-2"
-        />
-      )}
-      <h2 className="font-bold text-lg">
+    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition">
+      <h2 className="text-xl font-semibold">
         {profile.firstName} {profile.lastName}
       </h2>
-      <p className="text-sm text-gray-500">Birthdate: {profile.birthDate}</p>
-      {profile.description && (
-        <p className="mt-2 text-gray-700">{profile.description}</p>
-      )}
+
+      <p className="text-gray-500 mt-1">{profile.birthDate?.split("T")[0]}</p>
+
+      <div
+        className="mt-3 text-sm text-gray-700"
+        dangerouslySetInnerHTML={{ __html: profile.description || "" }}
+      />
+
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={() => router.push(`/profiles/${profile.id}/edit`)}
+          className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded"
+        >
+          Edit
+        </button>
+
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
-};
-
-export default ProfileCard;
+}

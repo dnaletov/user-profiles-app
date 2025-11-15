@@ -16,13 +16,12 @@ export default function CreateProfilePage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
 
     try {
       await axios.post(
         "/api/profiles",
         { firstName, lastName, birthDate, photo, description },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials: true }
       );
       router.push("/profiles");
     } catch (err) {

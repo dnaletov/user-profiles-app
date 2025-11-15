@@ -23,15 +23,12 @@ export default function EditProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : "";
-
   useEffect(() => {
     if (!id) return;
     const fetchProfile = async () => {
       try {
         const res = await axios.get<Profile>(`/api/profiles/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         });
         const data = res.data;
         setFormData({
@@ -54,7 +51,7 @@ export default function EditProfilePage() {
     };
 
     fetchProfile();
-  }, [id, token]);
+  }, [id]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,7 +59,7 @@ export default function EditProfilePage() {
 
     try {
       await axios.put(`/api/profiles/${id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
       });
       router.push("/profiles");
     } catch (err) {
