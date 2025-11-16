@@ -1,5 +1,3 @@
-// utils/validation.ts
-
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function validateEmail(email: string): void {

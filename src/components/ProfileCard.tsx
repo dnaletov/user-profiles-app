@@ -3,6 +3,8 @@
 import { Profile } from "@/app/types/profile";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useState } from "react";
+import Modal from "./Modal";
 
 export default function ProfileCard({
   profile,
@@ -12,14 +14,13 @@ export default function ProfileCard({
   onDelete: () => void;
 }) {
   const router = useRouter();
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
-  const handleDelete = async () => {
-    if (!confirm("Delete this profile?")) return;
-
+  const confirmDelete = async () => {
+    setShowConfirm(false);
     await axios.delete(`/api/profiles/${profile.id}`, {
       withCredentials: true,
     });
-
     onDelete();
   };
 
@@ -45,12 +46,19 @@ export default function ProfileCard({
         </button>
 
         <button
-          onClick={handleDelete}
           className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+          onClick={() => setShowConfirm(true)}
         >
           Delete
         </button>
       </div>
+      <Modal
+        open={showConfirm}
+        title="Delete Profile"
+        message="Are you sure you want to delete this profile?"
+        onConfirm={confirmDelete}
+        onCancel={() => setShowConfirm(false)}
+      />
     </div>
   );
 }

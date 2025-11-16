@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import ProfileCard from "../../components/ProfileCard";
-import { Profile } from "../types/profile";
+import ProfileCard from "../../../components/ProfileCard";
+import { Profile } from "../../types/profile";
 
 export default function ProfilesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -29,7 +29,10 @@ export default function ProfilesPage() {
   };
 
   useEffect(() => {
-    fetchProfiles();
+    const load = async () => {
+      await fetchProfiles();
+    };
+    load();
   }, []);
 
   return (

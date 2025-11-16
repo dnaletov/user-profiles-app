@@ -4,7 +4,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 // import PhotoUpload from "../../../../../components/PhotoUpload";
 import axios, { AxiosError } from "axios";
-import RichTextEditor from "../../../../components/RichTextEditor";
+import RichTextEditor from "../../../../../components/RichTextEditor";
 import { Profile, ProfileData } from "@/app/types/profile";
 
 export default function EditProfilePage() {
