@@ -5,6 +5,7 @@ interface ModalProps {
   open: boolean;
   title?: string;
   message?: string;
+  content?: React.ReactNode;
   onConfirm?: () => void;
   onCancel?: () => void;
   confirmText?: string;
@@ -15,6 +16,7 @@ export default function Modal({
   open,
   title = "Confirm",
   message,
+  content,
   onConfirm,
   onCancel,
   confirmText = "Yes",
@@ -24,11 +26,11 @@ export default function Modal({
 
   return createPortal(
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-lg p-6 shadow-xl w-80 relative animate-fade-in"
+        className="bg-white rounded-lg p-6 shadow-xl w-80 relative animate-fade-in max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -38,23 +40,26 @@ export default function Modal({
           ✕
         </button>
 
-        <h2 className="text-lg font-semibold mb-3">{title}</h2>
+        {title && <h2 className="text-lg font-semibold mb-3">{title}</h2>}
         {message && <p className="text-gray-700 mb-5">{message}</p>}
+        {content && <div className="mb-5">{content}</div>}
 
-        <div className="flex justify-end gap-2">
-          <button
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
-            onClick={onCancel}
-          >
-            {cancelText}
-          </button>
-          <button
-            className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
-            onClick={onConfirm}
-          >
-            {confirmText}
-          </button>
-        </div>
+        {onConfirm && (
+          <div className="flex justify-end gap-2">
+            <button
+              className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+              onClick={onCancel}
+            >
+              {cancelText}
+            </button>
+            <button
+              className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
+              onClick={onConfirm}
+            >
+              {confirmText}
+            </button>
+          </div>
+        )}
       </div>
     </div>,
     document.body

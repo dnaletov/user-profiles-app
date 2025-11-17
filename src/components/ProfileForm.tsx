@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import PhotoUpload from "./PhotoUpload";
 import RichTextEditor from "./RichTextEditor";
 
 interface Props {
@@ -28,12 +27,11 @@ const ProfileForm: React.FC<Props> = ({
   const [firstName, setFirstName] = useState(initialData.firstName || "");
   const [lastName, setLastName] = useState(initialData.lastName || "");
   const [birthDate, setBirthDate] = useState(initialData.birthDate || "");
-  const [photo, setPhoto] = useState(initialData.photo || "");
   const [description, setDescription] = useState(initialData.description || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ firstName, lastName, birthDate, photo, description });
+    onSubmit({ firstName, lastName, birthDate, description });
   };
 
   return (
@@ -59,7 +57,6 @@ const ProfileForm: React.FC<Props> = ({
         onChange={(e) => setBirthDate(e.target.value)}
         required
       />
-      {/* <PhotoUpload onUpload={setPhoto} value={photo} /> */}
       <RichTextEditor value={description} onChange={setDescription} />
       <button className="bg-blue-500 text-white p-2 rounded w-full">
         {submitLabel}

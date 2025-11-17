@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import ProfileCard from "../../../components/ProfileCard";
+import Modal from "../../../components/Modal";
 import { Profile } from "../../types/profile";
+import Image from "next/image";
 
 export default function ProfilesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -51,9 +54,63 @@ export default function ProfilesPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {profiles.map((p) => (
-          <ProfileCard key={p.id} profile={p} onDelete={fetchProfiles} />
+          <div
+            key={p.id}
+            onClick={() => setSelectedProfile(p)}
+            className="cursor-pointer"
+          >
+            <ProfileCard profile={p} onDelete={fetchProfiles} />
+          </div>
         ))}
       </div>
+
+      <Modal
+        open={!!selectedProfile}
+        onCancel={() => setSelectedProfile(null)}
+        title={
+          selectedProfile
+            ? selectedProfile.firstName + " " + selectedProfile.lastName
+            : ""
+        }
+        content={
+          selectedProfile && (
+            <div className="space-y-2">
+              <div className="w-full h-40 relative rounded overflow-hidden">
+                <Image
+                  src={selectedProfile.photo || "/nophoto.png"}
+                  alt={selectedProfile.firstName}
+                  fill
+                  className="object-cover rounded"
+                  sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 60vw,
+              33vw"
+                />
+              </div>
+              <p>
+                <strong>Name:</strong> {selectedProfile.firstName}{" "}
+                {selectedProfile.lastName}
+              </p>
+              <p>
+                <strong>Date of Birth:</strong>{" "}
+                {selectedProfile.birthDate
+                  ? new Date(selectedProfile.birthDate)
+                      .toLocaleDateString("en-GB")
+                      .replace(/\//g, ".")
+                  : ""}
+              </p>
+              <div>
+                <strong>Description:</strong>
+                <div
+                  className="text-sm text-gray-700"
+                  dangerouslySetInnerHTML={{
+                    __html: selectedProfile.description || "",
+                  }}
+                />
+              </div>
+            </div>
+          )
+        }
+      />
     </div>
   );
 }

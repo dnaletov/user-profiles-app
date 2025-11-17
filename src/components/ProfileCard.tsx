@@ -27,7 +27,7 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto">
+    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto h-96">
       <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden">
         <Image
           src={profile.photo || noPhotoImg}
@@ -45,7 +45,13 @@ export default function ProfileCard({
           {profile.firstName} {profile.lastName}
         </h2>
 
-        <p className="text-gray-500 mt-1">{profile.birthDate?.split("T")[0]}</p>
+        <p className="text-gray-500 mt-1">
+          {profile.birthDate
+            ? new Date(profile.birthDate)
+                .toLocaleDateString("en-GB")
+                .replace(/\//g, ".")
+            : ""}
+        </p>
 
         <div
           className="mt-3 text-sm text-gray-700 overflow-hidden"
@@ -60,15 +66,20 @@ export default function ProfileCard({
 
       <div className="flex justify-between mt-4">
         <button
-          onClick={() => router.push(`/profiles/${profile.id}/edit`)}
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/profiles/${profile.id}/edit`);
+          }}
           className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded"
         >
           Edit
         </button>
-
         <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowConfirm(true);
+          }}
           className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-          onClick={() => setShowConfirm(true)}
         >
           Delete
         </button>
