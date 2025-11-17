@@ -1,12 +1,13 @@
 import { useState } from "react";
 import RichTextEditor from "./RichTextEditor";
+import PhotoUpload from "./PhotoUpload";
 
 interface Props {
   initialData?: {
     firstName?: string;
     lastName?: string;
     birthDate?: string;
-    photo?: string;
+    photo?: string | null;
     description?: string;
   };
   onSubmit: (data: {
@@ -27,15 +28,17 @@ const ProfileForm: React.FC<Props> = ({
   const [firstName, setFirstName] = useState(initialData.firstName || "");
   const [lastName, setLastName] = useState(initialData.lastName || "");
   const [birthDate, setBirthDate] = useState(initialData.birthDate || "");
+  const [photo, setPhoto] = useState(initialData.photo || "");
   const [description, setDescription] = useState(initialData.description || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ firstName, lastName, birthDate, description });
+    onSubmit({ firstName, lastName, birthDate, photo, description });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <PhotoUpload value={photo} onChange={setPhoto} />
       <input
         className="border p-2 w-full"
         placeholder="First Name"
