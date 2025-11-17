@@ -4,6 +4,7 @@
 
 ````bash
 git clone https://github.com/dnaletov/user-profiles-app.git
+cd user-profiles-app
 
 2. Create a `.env` file in the root of the project and add the following variables:
    DATABASE_URL="mysql://ela_dmitrii:J3mR9Hz3N6WPA7@bart.elasticle.cz:25060/ela_dmitrii"
@@ -23,3 +24,9 @@ npm install
 npm run dev
 
 5. Open http://localhost:3000
+
+There is a test user you can log in with:
+Email: test@test.test
+Password: test
+
+Or you can create your own user using the registration form.
