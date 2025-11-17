@@ -1,8 +1,8 @@
-import { Profile, ProfileData } from "@/app/types/profile";
+import { ProfileData } from "@/app/types/profile";
 import prisma from "./prisma";
 
-export async function getProfilesByUserId(userId: number) {
-  return prisma.userProfile.findMany({ where: { userId } });
+export async function getProfiles() {
+  return prisma.userProfile.findMany();
 }
 
 export async function getProfileById(id: number) {

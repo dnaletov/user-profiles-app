@@ -2,10 +2,10 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
-// import PhotoUpload from "../../../../../components/PhotoUpload";
 import axios, { AxiosError } from "axios";
 import RichTextEditor from "../../../../../components/RichTextEditor";
 import { Profile, ProfileData } from "@/app/types/profile";
+import PhotoUpload from "@/components/PhotoUpload";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -20,8 +20,8 @@ export default function EditProfilePage() {
     description: "",
   });
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -81,6 +81,10 @@ export default function EditProfilePage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
+      <PhotoUpload
+        value={formData.photo}
+        onChange={(val) => handleChange("photo", val)}
+      />
       <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input

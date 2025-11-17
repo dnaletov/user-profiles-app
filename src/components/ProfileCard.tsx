@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useState } from "react";
 import Modal from "./Modal";
+import Image from "next/image";
+import noPhotoImg from "../../public/nophoto.png";
 
 export default function ProfileCard({
   profile,
@@ -25,17 +27,36 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition">
-      <h2 className="text-xl font-semibold">
-        {profile.firstName} {profile.lastName}
-      </h2>
+    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto">
+      <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden">
+        <Image
+          src={profile.photo || noPhotoImg}
+          alt={profile.photo ? "profile photo" : "No Photo"}
+          fill
+          sizes="(max-width: 768px) 100vw,
+              (max-width: 1200px) 50vw,
+              33vw"
+          className="object-cover"
+          loading="eager"
+        />
+      </div>
+      <div>
+        <h2 className="text-xl font-semibold truncate">
+          {profile.firstName} {profile.lastName}
+        </h2>
 
-      <p className="text-gray-500 mt-1">{profile.birthDate?.split("T")[0]}</p>
+        <p className="text-gray-500 mt-1">{profile.birthDate?.split("T")[0]}</p>
 
-      <div
-        className="mt-3 text-sm text-gray-700"
-        dangerouslySetInnerHTML={{ __html: profile.description || "" }}
-      />
+        <div
+          className="mt-3 text-sm text-gray-700 overflow-hidden"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}
+          dangerouslySetInnerHTML={{ __html: profile.description || "" }}
+        />
+      </div>
 
       <div className="flex justify-between mt-4">
         <button

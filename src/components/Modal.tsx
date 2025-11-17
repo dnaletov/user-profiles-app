@@ -1,4 +1,5 @@
 "use client";
+import { createPortal } from "react-dom";
 
 interface ModalProps {
   open: boolean;
@@ -21,7 +22,7 @@ export default function Modal({
 }: ModalProps) {
   if (!open) return null;
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50"
       onClick={onCancel}
@@ -55,6 +56,7 @@ export default function Modal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

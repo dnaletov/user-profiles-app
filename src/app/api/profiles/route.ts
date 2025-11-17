@@ -4,14 +4,10 @@ import {
   requireUser,
   errorResponse,
 } from "../../../lib/apiHelpers";
-import {
-  getProfilesByUserId,
-  createProfile,
-} from "../../../lib/profileService";
+import { getProfiles, createProfile } from "../../../lib/profileService";
 
-export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireUser(req);
-  const profiles = await getProfilesByUserId(user.userId);
+export const GET = withErrorHandling(async () => {
+  const profiles = await getProfiles();
   return NextResponse.json(profiles);
 });
 
