@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  withErrorHandling,
-  invalidId,
-  notFound,
-} from "../../../../lib/apiHelpers";
+import { withErrorHandling, invalidId, notFound } from "@/lib/apiHelpers";
 import {
   getProfileById,
   updateProfile,
   deleteProfile,
-} from "../../../../lib/profileService";
-
-interface Context {
-  params: { id: string };
-}
+} from "@/lib/profileService";
+import { Context } from "@/app/types/profile";
 
 export const GET = withErrorHandling(
   async (req: NextRequest, { params }: Context) => {

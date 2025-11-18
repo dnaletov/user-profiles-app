@@ -10,3 +10,7 @@ export interface Profile extends ProfileData {
   id: number;
   userId: number;
 }
+
+export interface Context {
+  params: Record<string, string>;
+}

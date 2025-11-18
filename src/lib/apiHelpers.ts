@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./auth";
 import prisma from "./prisma";
 import { JwtPayload } from "jsonwebtoken";
+import { Context } from "@/app/types/profile";
 
 interface User {
   userId: number;
-}
-interface Context {
-  params: { id: string };
 }
 
 export function unauthorized() {
@@ -57,9 +55,9 @@ export async function getProfileById(id: number) {
 }
 
 export function withErrorHandling(
-  handler: (req: NextRequest, context?: Context) => Promise<NextResponse>
+  handler: (req: NextRequest, context: Context) => Promise<NextResponse>
 ) {
-  return async (req: NextRequest, context?: Context) => {
+  return async (req: NextRequest, context: Context) => {
     try {
       return await handler(req, context);
     } catch (err) {
