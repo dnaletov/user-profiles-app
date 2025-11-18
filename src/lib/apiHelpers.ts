@@ -57,9 +57,9 @@ export async function getProfileById(id: number) {
 }
 
 export function withErrorHandling(
-  handler: (req: NextRequest, context: Context) => Promise<NextResponse>
+  handler: (req: NextRequest, context?: Context) => Promise<NextResponse>
 ) {
-  return async (req: NextRequest, context: { params: { id: string } }) => {
+  return async (req: NextRequest, context?: Context) => {
     try {
       return await handler(req, context);
     } catch (err) {
