@@ -1,0 +1,27 @@
+export const en = {
+  name: "Name",
+  birthday: "Birthday",
+  description: "Description",
+  edit: "Edit",
+  delete: "Delete",
+  createProfile: "Create Profile",
+  yourProfiles: "Your Profiles",
+  save: "Save",
+  cancel: "Cancel",
+  loading: "Loading...",
+  noPhoto: "No Photo",
+  firstName: "First Name",
+  lastName: "Last Name",
+  saveChanges: "Save Changes",
+  email: "Email",
+  password: "Password",
+  login: "Login",
+  register: "Register",
+  logout: "Logout",
+  confirmDelete: "Are you sure you want to delete this profile?",
+  deleteProfile: "Delete Profile",
+  loggingOut: "Logging out...",
+  confirmLogout: "Are you sure you want to logout?",
+};
+
+export type Translations = typeof en;

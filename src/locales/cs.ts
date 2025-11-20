@@ -1,0 +1,27 @@
+import { Translations } from "./en";
+
+export const cs: Translations = {
+  name: "Jméno",
+  birthday: "Datum narození",
+  description: "Popis",
+  edit: "Upravit",
+  delete: "Smazat",
+  createProfile: "Vytvořit profil",
+  yourProfiles: "Vaše profily",
+  save: "Uložit",
+  cancel: "Zrušit",
+  loading: "Načítání...",
+  noPhoto: "Žádná fotka",
+  firstName: "Křestní jméno",
+  lastName: "Příjmení",
+  saveChanges: "Uložit změny",
+  email: "Email",
+  password: "Heslo",
+  login: "Přihlásit se",
+  register: "Registrovat se",
+  logout: "Odhlásit se",
+  confirmDelete: "Opravdu chcete smazat tento profil?",
+  deleteProfile: "Smazat profil",
+  loggingOut: "Odhlašování...",
+  confirmLogout: "Opravdu se chcete odhlásit?",
+};

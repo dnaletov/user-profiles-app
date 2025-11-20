@@ -1,4 +1,4 @@
-import { ProfileData } from "@/app/types/profile";
+import { ProfileData } from "@/types";
 import prisma from "./prisma";
 
 export async function getProfiles() {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./auth";
 import prisma from "./prisma";
 import { JwtPayload } from "jsonwebtoken";
-import { Context } from "@/app/types/profile";
+import { Context } from "@/types";
 
 interface User {
   userId: number;
@@ -48,10 +48,6 @@ export async function getUserFromRequest(
     }
   }
   return null;
-}
-
-export async function getProfileById(id: number) {
-  return prisma.userProfile.findUnique({ where: { id } });
 }
 
 export function withErrorHandling<T = {}>(

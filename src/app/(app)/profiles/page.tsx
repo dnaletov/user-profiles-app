@@ -1,59 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import ProfileCard from "../../../components/ProfileCard";
 import Modal from "../../../components/Modal";
-import { Profile } from "../../types/profile";
-import Image from "next/image";
+import { Profile } from "@/types";
+import { useProfiles } from "@/hooks/useProfiles";
+import { Button } from "@/components/ui";
+import { APP_ROUTES } from "@/constants/api";
+import { ProfileDetails } from "@/components/ProfileDetails";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ProfilesPage() {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
-  const fetchProfiles = async () => {
-    try {
-      const res = await axios.get("/api/profiles", { withCredentials: true });
-      setProfiles(res.data);
-      setError(null);
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.error);
-        if (err.response?.status === 401) {
-          router.replace("/login");
-        }
-      } else {
-        setError("Unknown error occurred");
-      }
-    }
-  };
+  const { profiles, loading, error, fetchProfiles } = useProfiles();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const load = async () => {
-      await fetchProfiles();
-    };
-    load();
+    fetchProfiles();
   }, []);
 
   return (
     <div>
       <div className="flex justify-between mb-6">
-        <h1 className="text-3xl font-bold">Your Profiles</h1>
-        <button
-          onClick={() => router.push("/profiles/create")}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+        <h1 className="text-3xl font-bold">{t("yourProfiles")}</h1>
+        <Button
+          onClick={() => router.push(APP_ROUTES.PROFILES.CREATE)}
         >
-          Create Profile
-        </button>
+          {t("createProfile")}
+        </Button>
       </div>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
+      {loading && <p className="text-gray-500">{t("loading")}</p>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {profiles.map((p) => (
+        {profiles?.map((p) => (
           <div
             key={p.id}
             onClick={() => setSelectedProfile(p)}
@@ -74,40 +57,7 @@ export default function ProfilesPage() {
         }
         content={
           selectedProfile && (
-            <div className="space-y-2">
-              <div className="w-full h-40 relative rounded overflow-hidden">
-                <Image
-                  src={selectedProfile.photo || "/nophoto.png"}
-                  alt={selectedProfile.firstName}
-                  fill
-                  className="object-cover rounded"
-                  sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 60vw,
-              33vw"
-                />
-              </div>
-              <p>
-                <strong>Name:</strong> {selectedProfile.firstName}{" "}
-                {selectedProfile.lastName}
-              </p>
-              <p>
-                <strong>Date of Birth:</strong>{" "}
-                {selectedProfile.birthDate
-                  ? new Date(selectedProfile.birthDate)
-                      .toLocaleDateString("en-GB")
-                      .replace(/\//g, ".")
-                  : ""}
-              </p>
-              <div>
-                <strong>Description:</strong>
-                <div
-                  className="text-sm text-gray-700"
-                  dangerouslySetInnerHTML={{
-                    __html: selectedProfile.description || "",
-                  }}
-                />
-              </div>
-            </div>
+            <ProfileDetails profile={selectedProfile} variant="full" />
           )
         }
       />

@@ -2,6 +2,8 @@
 
 import { useState, FormEvent } from "react";
 import { AxiosError } from "axios";
+import { Input, Button } from "./ui";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface AuthFormProps {
   title: string;
@@ -18,6 +20,7 @@ export default function AuthForm({
   footerText,
   footerAction,
 }: AuthFormProps) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>("");
@@ -47,25 +50,29 @@ export default function AuthForm({
 
         {error && <p className="text-red-500 mb-2">{error}</p>}
 
-        <input
-          className="border p-2 mb-2 w-full"
-          placeholder="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="mb-2">
+          <Input
+            placeholder={t("email")}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
 
-        <input
-          className="border p-2 mb-4 w-full"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="mb-4">
+          <Input
+            type="password"
+            placeholder={t("password")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
 
-        <button className="bg-blue-500 text-white p-2 rounded w-full">
+        <Button type="submit" fullWidth>
           {submitText}
-        </button>
+        </Button>
 
         <p
           className="text-blue-500 cursor-pointer mt-3 text-center"

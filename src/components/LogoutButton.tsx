@@ -1,14 +1,15 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useState } from "react";
 import Modal from "./Modal";
+import { Button } from "./ui";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function LogoutButton() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   const confirmLogout = async () => {
     setLoading(true);
@@ -23,18 +24,18 @@ export default function LogoutButton() {
 
   return (
     <>
-      <button
+      <Button
+        variant="danger"
         onClick={() => setShowConfirm(true)}
-        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition disabled:opacity-60"
         disabled={loading}
-        aria-label="Logout"
+        className="px-4 py-2"
       >
-        {loading ? "Logging out..." : "Logout"}
-      </button>
+        {loading ? t("loggingOut") : t("logout")}
+      </Button>
       <Modal
         open={showConfirm}
-        title="Logout"
-        message="Are you sure you want to logout?"
+        title={t("logout")}
+        content={t("confirmLogout")}
         onConfirm={confirmLogout}
         onCancel={() => setShowConfirm(false)}
       />
