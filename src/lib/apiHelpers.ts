@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./auth";
-import prisma from "./prisma";
 import { JwtPayload } from "jsonwebtoken";
 import { Context } from "@/types";
 

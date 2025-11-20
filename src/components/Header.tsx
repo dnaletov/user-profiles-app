@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-import { useTranslation } from "@/hooks/useTranslation";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "./ui";
 
 export default function Header() {
-  const { t } = useTranslation();
   const { language, toggleLanguage } = useLanguage();
   
   return (

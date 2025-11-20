@@ -24,4 +24,6 @@ export const cs: Translations = {
   deleteProfile: "Smazat profil",
   loggingOut: "Odhlašování...",
   confirmLogout: "Opravdu se chcete odhlásit?",
+  yes: "Ano",
+  no: "Ne",
 };

@@ -26,7 +26,7 @@ export const ProfileDetails = ({
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
-            loading="lazy"
+            loading="eager"
           />
         </div>
         <div>
@@ -67,7 +67,7 @@ export const ProfileDetails = ({
         <div>
           <span className="block text-sm text-gray-500 uppercase tracking-wider font-semibold mb-1">{t("description")}</span>
           <div
-            className="text-gray-700 prose prose-sm max-w-none bg-gray-50 p-3 rounded-md"
+            className="text-gray-700"
             dangerouslySetInnerHTML={{
               __html: profile.description || "",
             }}

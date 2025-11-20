@@ -22,6 +22,8 @@ export const en = {
   deleteProfile: "Delete Profile",
   loggingOut: "Logging out...",
   confirmLogout: "Are you sure you want to logout?",
+  yes: "Yes",
+  no: "No",
 };
 
 export type Translations = typeof en;

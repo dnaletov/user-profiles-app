@@ -38,7 +38,7 @@ export default function ProfileCard({
             e.stopPropagation();
             router.push(`/profiles/${profile.id}/edit`);
           }}
-          className="px-3 py-1"
+          className="px-3 py-1 min-w-[90px]"
         >
           {t("edit")}
         </Button>
@@ -48,7 +48,7 @@ export default function ProfileCard({
             e.stopPropagation();
             setShowConfirm(true);
           }}
-          className="px-3 py-1"
+          className="px-3 py-1 min-w-[90px]"
         >
           {t("delete")}
         </Button>

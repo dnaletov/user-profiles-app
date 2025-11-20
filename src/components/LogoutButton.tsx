@@ -28,7 +28,7 @@ export default function LogoutButton() {
         variant="danger"
         onClick={() => setShowConfirm(true)}
         disabled={loading}
-        className="px-4 py-2"
+        className="px-4 py-2 min-w-[120px]"
       >
         {loading ? t("loggingOut") : t("logout")}
       </Button>
