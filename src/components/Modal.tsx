@@ -1,4 +1,5 @@
 "use client";
+
 import { createPortal } from "react-dom";
 
 interface ModalProps {
@@ -12,6 +13,8 @@ interface ModalProps {
   cancelText?: string;
 }
 
+import { useTranslation } from "@/hooks/useTranslation";
+
 export default function Modal({
   open,
   title = "Confirm",
@@ -19,9 +22,12 @@ export default function Modal({
   content,
   onConfirm,
   onCancel,
-  confirmText = "Yes",
-  cancelText = "No",
+  confirmText,
+  cancelText,
 }: ModalProps) {
+  const { t } = useTranslation();
+  const finalConfirmText = confirmText || t("yes");
+  const finalCancelText = cancelText || t("no");
   if (!open) return null;
 
   return createPortal(
@@ -50,13 +56,13 @@ export default function Modal({
               className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
               onClick={onCancel}
             >
-              {cancelText}
+              {finalCancelText}
             </button>
             <button
               className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
               onClick={onConfirm}
             >
-              {confirmText}
+              {finalConfirmText}
             </button>
           </div>
         )}

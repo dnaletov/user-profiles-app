@@ -2,33 +2,33 @@
 
 import ProfileForm from "@/components/ProfileForm";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import axios, { AxiosError } from "axios";
-import { ProfileData } from "@/app/types/profile";
+import axios from "axios";
+import { ProfileData } from "@/types";
+import { useApi } from "@/hooks/useApi";
+import { API_ROUTES, APP_ROUTES } from "@/constants/api";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function CreateProfilePage() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const { error, execute } = useApi<ProfileData>();
+  const { t } = useTranslation();
 
   const handleSubmit = async (data: ProfileData) => {
     try {
-      await axios.post("/api/profiles", data, { withCredentials: true });
-      router.push("/profiles");
+      await execute(() => 
+        axios.post(API_ROUTES.PROFILES.LIST, data, { withCredentials: true })
+      );
+      router.push(APP_ROUTES.PROFILES.LIST);
     } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.error);
-      } else {
-        setError("Unexpected error");
-      }
       console.error(err);
     }
   };
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Create Profile</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("createProfile")}</h1>
       {error && <p className="text-red-500 mb-2">{error}</p>}
-      <ProfileForm onSubmit={handleSubmit} submitLabel="Create" />
+      <ProfileForm onSubmit={handleSubmit} submitLabel={t("createProfile")} />
     </div>
   );
 }

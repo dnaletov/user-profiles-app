@@ -1,11 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import "froala-editor/css/froala_editor.pkgd.min.css";
-import "froala-editor/css/froala_style.min.css";
+import "react-quill-new/dist/quill.snow.css";
+import { useMemo } from "react";
 
-const FroalaEditor = dynamic(() => import("react-froala-wysiwyg"), {
+const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false,
+  loading: () => <p>Loading editor...</p>,
 });
 
 interface Props {
@@ -14,32 +15,24 @@ interface Props {
 }
 
 export default function RichTextEditor({ value, onChange }: Props) {
+  const modules = useMemo(
+    () => ({
+      toolbar: [
+        ["bold", "italic", "underline", "strike"],
+      ],
+    }),
+    []
+  );
+
   return (
-    <div>
-      <FroalaEditor
-        tag="textarea"
-        model={value}
-        onModelChange={onChange}
-        config={{
-          placeholderText: "Type your description here...",
-          charCounterCount: true,
-          toolbarButtons: [
-            "bold",
-            "italic",
-            "underline",
-            "strikeThrough",
-            "|",
-            "formatOL",
-            "formatUL",
-            "|",
-            "insertLink",
-            "insertImage",
-            "|",
-            "undo",
-            "redo",
-          ],
-          quickInsertTags: ["p", "h1", "h2", "h3", "ul", "ol", "li"],
-        }}
+    <div className="rich-text-editor">
+      <ReactQuill
+        theme="snow"
+        value={value}
+        onChange={onChange}
+        modules={modules}
+        placeholder="Type your description here..."
+        className="h-64 mb-12" // Added height and margin for toolbar
       />
     </div>
   );

@@ -3,75 +3,61 @@
 import { useEffect, useState } from "react";
 import ProfileForm from "@/components/ProfileForm";
 import { useParams, useRouter } from "next/navigation";
-import axios, { AxiosError } from "axios";
-import { Profile, ProfileData } from "@/app/types/profile";
+import axios from "axios";
+import { ProfileData } from "@/types";
+import { useProfile } from "@/hooks/useProfile";
+import { useApi } from "@/hooks/useApi";
+import { formatDateForInput } from "@/utils/formatters";
+import { API_ROUTES, APP_ROUTES } from "@/constants/api";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const params = useParams();
-  const id = params?.id;
+  const id = params?.id as string;
 
+  const { profile, loading, error: fetchError } = useProfile(id);
+  const { t } = useTranslation();
+  
+  const { error: updateError, execute } = useApi<ProfileData>();
   const [initialData, setInitialData] = useState<Partial<ProfileData>>({});
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get<Profile>(`/api/profiles/${id}`, {
-          withCredentials: true,
-        });
-        const data = res.data;
-
-        setInitialData({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          birthDate: data.birthDate.split("T")[0],
-          photo: data.photo || "",
-          description: data.description || "",
-        });
-      } catch (err) {
-        if (err instanceof AxiosError) {
-          setError(err.response?.data?.error);
-        } else {
-          setError("An unexpected error occurred");
-        }
-        console.error("Error fetching profile:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [id]);
+    if (profile) {
+      setInitialData({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        birthDate: formatDateForInput(profile.birthDate),
+        photo: profile.photo || "",
+        description: profile.description || "",
+      });
+    }
+  }, [profile]);
 
   const handleSubmit = async (data: ProfileData) => {
     if (!id) return;
 
     try {
-      await axios.put(`/api/profiles/${id}`, data, { withCredentials: true });
-      router.push("/profiles");
+      await execute(() =>
+        axios.put(API_ROUTES.PROFILES.BY_ID(id), data, { withCredentials: true })
+      );
+      router.push(APP_ROUTES.PROFILES.LIST);
     } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.error);
-      } else {
-        setError("An unexpected error occurred");
-      }
       console.error("Error updating profile:", err);
     }
   };
 
-  if (loading) return <p className="p-6">Loading...</p>;
-  if (error) return <p className="p-6 text-red-500">{error}</p>;
+  if (loading) return <p className="p-6">{t("loading")}</p>;
+  if (fetchError) return <p className="p-6 text-red-500">{fetchError}</p>;
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("edit")} Profile</h1>
+      {updateError && <p className="text-red-500 mb-2">{updateError}</p>}
       <ProfileForm
         initialData={initialData}
         onSubmit={handleSubmit}
-        submitLabel="Save Changes"
+        submitLabel={t("saveChanges")}
       />
     </div>
   );

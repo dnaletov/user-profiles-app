@@ -5,7 +5,7 @@ import {
   updateProfile,
   deleteProfile,
 } from "@/lib/profileService";
-import { Context } from "@/app/types/profile";
+import { Context } from "@/types";
 
 export const GET = withErrorHandling<{ id: string }>(
   async (req: NextRequest, context?: Context<{ id: string }>) => {
