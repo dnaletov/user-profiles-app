@@ -11,6 +11,6 @@ export interface Profile extends ProfileData {
   userId: number;
 }
 
-export interface Context {
-  params: Record<string, string>;
+export interface Context<T = {}> {
+  params: Promise<T>;
 }

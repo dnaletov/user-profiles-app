@@ -54,10 +54,10 @@ export async function getProfileById(id: number) {
   return prisma.userProfile.findUnique({ where: { id } });
 }
 
-export function withErrorHandling(
-  handler: (req: NextRequest, context: Context) => Promise<NextResponse>
+export function withErrorHandling<T = {}>(
+  handler: (req: NextRequest, context?: Context<T>) => Promise<NextResponse>
 ) {
-  return async (req: NextRequest, context: Context) => {
+  return async (req: NextRequest, context?: Context<T>) => {
     try {
       return await handler(req, context);
     } catch (err) {

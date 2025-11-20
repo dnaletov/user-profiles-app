@@ -7,9 +7,9 @@ import {
 } from "@/lib/profileService";
 import { Context } from "@/app/types/profile";
 
-export const GET = withErrorHandling(
-  async (req: NextRequest, { params }: Context) => {
-    const { id } = await params;
+export const GET = withErrorHandling<{ id: string }>(
+  async (req: NextRequest, context?: Context<{ id: string }>) => {
+    const { id } = await context!.params;
     const profileId = parseInt(id, 10);
     if (isNaN(profileId)) return invalidId();
 
@@ -20,9 +20,9 @@ export const GET = withErrorHandling(
   }
 );
 
-export const PUT = withErrorHandling(
-  async (req: NextRequest, { params }: Context) => {
-    const { id } = await params;
+export const PUT = withErrorHandling<{ id: string }>(
+  async (req: NextRequest, context?: Context<{ id: string }>) => {
+    const { id } = await context!.params;
     const profileId = parseInt(id, 10);
     if (isNaN(profileId)) return invalidId();
 
@@ -35,9 +35,9 @@ export const PUT = withErrorHandling(
   }
 );
 
-export const DELETE = withErrorHandling(
-  async (req: NextRequest, { params }: Context) => {
-    const { id } = await params;
+export const DELETE = withErrorHandling<{ id: string }>(
+  async (req: NextRequest, context?: Context<{ id: string }>) => {
+    const { id } = await context!.params;
     const profileId = parseInt(id, 10);
     if (isNaN(profileId)) return invalidId();
 
