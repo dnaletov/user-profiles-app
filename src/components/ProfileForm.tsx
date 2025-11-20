@@ -33,6 +33,7 @@ const ProfileForm: React.FC<Props> = ({
   const [birthDate, setBirthDate] = useState(initialData.birthDate || "");
   const [photo, setPhoto] = useState(initialData.photo || "");
   const [description, setDescription] = useState(initialData.description || "");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
@@ -46,6 +47,30 @@ const ProfileForm: React.FC<Props> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (!firstName.trim() || !lastName.trim() || !birthDate) {
+      setError(t("errorRequiredFields"));
+      return;
+    }
+
+    const today = new Date();
+    const selectedDate = new Date(birthDate);
+    if (selectedDate > today) {
+      setError(t("errorFutureDate"));
+      return;
+    }
+
+    if (description.length > 150) {
+      setError(t("errorDescriptionLength"));
+      return;
+    }
+
+    if ((firstName + lastName).length > 20) {
+      setError(t("errorNameLength"));
+      return;
+    }
+
     onSubmit({ firstName, lastName, birthDate, photo, description });
   };
 
@@ -69,11 +94,13 @@ const ProfileForm: React.FC<Props> = ({
         value={birthDate}
         onChange={(e) => setBirthDate(e.target.value)}
         required
+        max={new Date().toISOString().split("T")[0]}
       />
       <RichTextEditor value={description} onChange={setDescription} />
       <Button type="submit" fullWidth>
         {submitLabel || t("save")}
       </Button>
+      {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
     </form>
   );
 };

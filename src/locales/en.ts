@@ -24,6 +24,10 @@ export const en = {
   confirmLogout: "Are you sure you want to logout?",
   yes: "Yes",
   no: "No",
+  errorFutureDate: "Date of birth cannot be in the future",
+  errorDescriptionLength: "Description cannot exceed 150 characters",
+  errorNameLength: "Combined name length cannot exceed 20 characters",
+  errorRequiredFields: "Please fill in all required fields",
 };
 
 export type Translations = typeof en;

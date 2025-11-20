@@ -26,4 +26,8 @@ export const cs: Translations = {
   confirmLogout: "Opravdu se chcete odhlásit?",
   yes: "Ano",
   no: "Ne",
+  errorFutureDate: "Datum narození nemůže být v budoucnosti",
+  errorDescriptionLength: "Popis nesmí přesáhnout 150 znaků",
+  errorNameLength: "Celková délka jména nesmí přesáhnout 20 znaků",
+  errorRequiredFields: "Prosím vyplňte všechna povinná pole",
 };
