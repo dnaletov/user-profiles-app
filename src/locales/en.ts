@@ -10,6 +10,7 @@ export const en = {
   cancel: "Cancel",
   loading: "Loading...",
   noPhoto: "No Photo",
+  uploadPhoto: "Upload Photo",
   firstName: "First Name",
   lastName: "Last Name",
   saveChanges: "Save Changes",

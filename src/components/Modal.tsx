@@ -1,6 +1,8 @@
 "use client";
 
 import { createPortal } from "react-dom";
+import { useTranslation } from "@/hooks/useTranslation";
+import { Button } from "./ui";
 
 interface ModalProps {
   open: boolean;
@@ -12,8 +14,6 @@ interface ModalProps {
   confirmText?: string;
   cancelText?: string;
 }
-
-import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Modal({
   open,
@@ -39,35 +39,38 @@ export default function Modal({
         className="bg-white rounded-lg p-6 shadow-xl w-80 relative animate-fade-in max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
+        <Button
           onClick={onCancel}
-          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-xl leading-none"
+          variant="transparent"
+          className="absolute top-2 right-2"
         >
           ✕
-        </button>
+        </Button>
 
         {title && <h2 className="text-lg font-semibold mb-3">{title}</h2>}
         {message && <p className="text-gray-700 mb-5">{message}</p>}
         {content && <div className="mb-5">{content}</div>}
 
         {onConfirm && (
-          <div className="flex justify-end gap-2">
-            <button
-              className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+          <div className="flex justify-between gap-2 ">
+            <Button
+              variant="secondary"
               onClick={onCancel}
+              className="min-w-[80px]"
             >
               {finalCancelText}
-            </button>
-            <button
-              className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
+            </Button>
+            <Button
+              variant="danger"
               onClick={onConfirm}
+              className="min-w-[80px]"
             >
               {finalConfirmText}
-            </button>
+            </Button>
           </div>
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

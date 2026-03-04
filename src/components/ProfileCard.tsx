@@ -28,7 +28,7 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto h-96">
+    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto">
       <ProfileDetails profile={profile} variant="card" />
 
       <div className="flex justify-between mt-4">
@@ -38,7 +38,7 @@ export default function ProfileCard({
             e.stopPropagation();
             router.push(`/profiles/${profile.id}/edit`);
           }}
-          className="px-3 py-1 min-w-[90px]"
+          className="min-w-[80px]"
         >
           {t("edit")}
         </Button>
@@ -48,7 +48,7 @@ export default function ProfileCard({
             e.stopPropagation();
             setShowConfirm(true);
           }}
-          className="px-3 py-1 min-w-[90px]"
+          className="min-w-[80px]"
         >
           {t("delete")}
         </Button>

@@ -48,7 +48,7 @@ export default function EditProfilePage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">{t("edit")} Profile</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("edit")}</h1>
       {updateError && <p className="text-red-500 mb-2">{updateError}</p>}
       <ProfileForm
         key={id}

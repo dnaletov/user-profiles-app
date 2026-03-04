@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 type Language = "en" | "cs";
 
@@ -15,12 +21,15 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 );
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window === "undefined") return "cs";
+  const [language, setLanguage] = useState<Language>("cs");
 
+  useEffect(() => {
     const savedLang = localStorage.getItem("language");
-    return savedLang === "en" || savedLang === "cs" ? savedLang : "cs";
-  });
+    if (savedLang === "en" || savedLang === "cs") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLanguage(savedLang);
+    }
+  }, []);
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
