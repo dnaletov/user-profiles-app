@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { AxiosError, AxiosResponse } from 'axios';
-import { APP_ROUTES } from '@/constants/api';
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { AxiosError, AxiosResponse } from "axios";
+import { APP_ROUTES } from "@/constants/api";
 
 export function useApi<T>() {
   const [data, setData] = useState<T | null>(null);
@@ -11,33 +11,47 @@ export function useApi<T>() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const execute = async (apiCall: () => Promise<AxiosResponse<T>>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await apiCall();
-      setData(res.data);
-      return res.data;
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        setError(err.response?.data?.error || 'An error occurred');
-        if (err.response?.status === 401) {
-          router.replace(APP_ROUTES.LOGIN);
+  const execute = useCallback(
+    async (
+      apiCall: (signal?: AbortSignal) => Promise<AxiosResponse<T>>,
+      signal?: AbortSignal,
+    ) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await apiCall(signal);
+        setData(res.data);
+        return res.data;
+      } catch (err: unknown) {
+        if (
+          err instanceof Error &&
+          (err.name === "CanceledError" || err.name === "AbortError")
+        ) {
+          return;
         }
-      } else {
-        setError('Unknown error occurred');
+        if (err instanceof AxiosError) {
+          setError(err.response?.data?.error || "An error occurred");
+          if (err.response?.status === 401) {
+            router.replace(APP_ROUTES.LOGIN);
+          }
+        } else {
+          setError("Unknown error occurred");
+        }
+        throw err;
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
       }
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [router],
+  );
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setData(null);
     setError(null);
     setLoading(false);
-  };
+  }, []);
 
   return { data, loading, error, execute, reset };
 }

@@ -26,7 +26,8 @@ export const en = {
   no: "No",
   errorFutureDate: "Date of birth cannot be in the future",
   errorDescriptionLength: "Description cannot exceed 150 characters",
-  errorNameLength: "Combined name length cannot exceed 20 characters",
+  errorFirstNameLength: "First name cannot exceed 20 characters",
+  errorLastNameLength: "Last name cannot exceed 20 characters",
   errorRequiredFields: "Please fill in all required fields",
 };
 

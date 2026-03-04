@@ -28,6 +28,7 @@ export const cs: Translations = {
   no: "Ne",
   errorFutureDate: "Datum narození nemůže být v budoucnosti",
   errorDescriptionLength: "Popis nesmí přesáhnout 150 znaků",
-  errorNameLength: "Celková délka jména nesmí přesáhnout 20 znaků",
+  errorFirstNameLength: "Celková délka jména nesmí přesáhnout 20 znaků",
+  errorLastNameLength: "Celková délka příjmení nesmí přesáhnout 20 znaků", 
   errorRequiredFields: "Prosím vyplňte všechna povinná pole",
 };

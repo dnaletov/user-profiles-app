@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 type Language = "en" | "cs";
 
@@ -10,17 +10,17 @@ interface LanguageContextType {
   toggleLanguage: () => void;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined,
+);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window === "undefined") return "cs";
 
-  useEffect(() => {
-    const savedLang = localStorage.getItem("language") as Language;
-    if (savedLang && (savedLang === "en" || savedLang === "cs")) {
-      setLanguage(savedLang);
-    }
-  }, []);
+    const savedLang = localStorage.getItem("language");
+    return savedLang === "en" || savedLang === "cs" ? savedLang : "cs";
+  });
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
@@ -32,7 +32,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, toggleLanguage }}>
+    <LanguageContext.Provider
+      value={{ language, setLanguage: handleSetLanguage, toggleLanguage }}
+    >
       {children}
     </LanguageContext.Provider>
   );

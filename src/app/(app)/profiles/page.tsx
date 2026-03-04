@@ -18,16 +18,16 @@ export default function ProfilesPage() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    fetchProfiles();
-  }, []);
+    const controller = new AbortController();
+    fetchProfiles(controller.signal);
+    return () => controller.abort();
+  }, [fetchProfiles]);
 
   return (
     <div>
       <div className="flex justify-between mb-6">
         <h1 className="text-3xl font-bold">{t("yourProfiles")}</h1>
-        <Button
-          onClick={() => router.push(APP_ROUTES.PROFILES.CREATE)}
-        >
+        <Button onClick={() => router.push(APP_ROUTES.PROFILES.CREATE)}>
           {t("createProfile")}
         </Button>
       </div>

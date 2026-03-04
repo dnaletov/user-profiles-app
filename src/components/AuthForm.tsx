@@ -31,9 +31,11 @@ export default function AuthForm({
 
     try {
       await onSubmit(email, password);
-    } catch (err) {
+    } catch (err: unknown) {
       if (err instanceof AxiosError) {
-        setError(err.response?.data?.error);
+        setError(err.response?.data?.error || "An error occurred");
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
         setError("Something went wrong");
       }
