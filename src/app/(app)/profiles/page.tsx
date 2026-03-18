@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import ProfileCard from "@/components/ProfileCard";
 import Modal from "@/components/Modal";
 import { Profile } from "@/types";
@@ -13,7 +13,6 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ProfilesPage() {
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
-  const router = useRouter();
   const { profiles, loading, error, fetchProfiles } = useProfiles();
   const { t } = useTranslation();
 
@@ -27,12 +26,9 @@ export default function ProfilesPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{t("yourProfiles")}</h1>
-        <Button
-          onClick={() => router.push(APP_ROUTES.PROFILES.CREATE)}
-          className="min-w-[120px]"
-        >
-          {t("createProfile")}
-        </Button>
+        <Link href={APP_ROUTES.PROFILES.CREATE} legacyBehavior>
+          <Button className="min-w-[120px]">{t("createProfile")}</Button>
+        </Link>
       </div>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}

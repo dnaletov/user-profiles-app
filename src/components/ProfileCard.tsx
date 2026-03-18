@@ -1,5 +1,5 @@
 import { Profile } from "@/types";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import axios from "axios";
 import { useState } from "react";
 import Modal from "./Modal";
@@ -15,7 +15,6 @@ export default function ProfileCard({
   profile: Profile;
   onDelete: () => void;
 }) {
-  const router = useRouter();
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const { t } = useTranslation();
 
@@ -32,16 +31,17 @@ export default function ProfileCard({
       <ProfileDetails profile={profile} variant="card" />
 
       <div className="flex justify-between mt-4">
-        <Button
-          variant="warning"
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(`/profiles/${profile.id}/edit`);
-          }}
-          className="min-w-[80px]"
-        >
-          {t("edit")}
-        </Button>
+        <Link href={`/profiles/${profile.id}/edit`} legacyBehavior>
+          <Button
+            variant="warning"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="min-w-[80px]"
+          >
+            {t("edit")}
+          </Button>
+        </Link>
         <Button
           variant="danger"
           onClick={(e) => {
