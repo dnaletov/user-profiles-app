@@ -26,13 +26,11 @@ export default function ProfilesPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">{t("yourProfiles")}</h1>
-        <Link href={APP_ROUTES.PROFILES.CREATE} legacyBehavior>
+        <Link href={APP_ROUTES.PROFILES.CREATE}>
           <Button className="min-w-[120px]">{t("createProfile")}</Button>
         </Link>
       </div>
-
       {error && <p className="text-red-500 mb-4">{error}</p>}
-
       {loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -40,7 +38,6 @@ export default function ProfilesPage() {
           ))}
         </div>
       )}
-
       {!loading && profiles && profiles.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {profiles.map((p) => (
@@ -54,13 +51,11 @@ export default function ProfilesPage() {
           ))}
         </div>
       )}
-
       {!loading && profiles && profiles.length === 0 && (
         <p className="text-gray-500 mt-8 text-center bg-gray-50 py-10 rounded-xl border border-dashed border-gray-300">
           No profiles found.
         </p>
       )}
-
       <Modal
         open={!!selectedProfile}
         onCancel={() => setSelectedProfile(null)}
