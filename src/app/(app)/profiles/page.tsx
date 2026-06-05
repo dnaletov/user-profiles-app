@@ -39,12 +39,12 @@ export default function ProfilesPage() {
         </div>
       )}
       {!loading && profiles && profiles.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {profiles.map((p) => (
             <div
               key={p.id}
               onClick={() => setSelectedProfile(p)}
-              className="cursor-pointer"
+              className="cursor-pointer h-96"
             >
               <ProfileCard profile={p} onDelete={fetchProfiles} />
             </div>

@@ -27,9 +27,9 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto">
+    <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition flex flex-col justify-between w-auto h-full">
       <ProfileDetails profile={profile} variant="card" />
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between mt-2">
         <Link href={`/profiles/${profile.id}/edit`}>
           <Button
             variant="warning"
