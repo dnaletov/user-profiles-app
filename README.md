@@ -2,31 +2,52 @@
 
 1. Clone project:
 
-````bash
+```bash
 git clone https://github.com/dnaletov/user-profiles-app.git
 cd user-profiles-app
+```
 
-2. Create a `.env` file in the root of the project and add the following variables:
-   DATABASE_URL="mysql://ela_dmitrii:J3mR9Hz3N6WPA7@bart.elasticle.cz:25060/ela_dmitrii"
-   JWT_SECRET="123456789"
-   CLOUDINARY_NAME=dhryd47yb
-   CLOUDINARY_KEY=184234677168721
-   CLOUDINARY_SECRET=rpit08QYgqNT7rMmMI0xRdOeafg
-
-3. Install dependencies:
+2. Install dependencies:
 
 ```bash
 npm install
-````
+```
 
-4. Start the development server:
+3. Create a `.env` file in the root of the project:
 
+```env
+DATABASE_URL="file:./dev.db"
+JWT_SECRET="your_secret"
+CLOUDINARY_NAME=your_cloudinary_name
+CLOUDINARY_KEY=your_cloudinary_key
+CLOUDINARY_SECRET=your_cloudinary_secret
+```
+
+4. Initialize the database:
+
+```bash
+npx prisma db push
+```
+
+5. Seed the database with test data:
+
+```bash
+npx prisma db seed
+```
+
+6. Start the development server:
+
+```bash
 npm run dev
+```
 
-5. Open http://localhost:3000
+7. Open http://localhost:3000
 
-There is a test user you can log in with:
+A test account is available:
+
+```
 Email: test@test.test
 Password: test
+```
 
-Or you can create your own user using the registration form.
+Or register a new account using the registration form.

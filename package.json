@@ -22,6 +22,9 @@
     "react-easy-crop": "^5.5.3",
     "react-quill-new": "^3.6.0"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
@@ -35,6 +38,7 @@
     "eslint-config-next": "16.0.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
