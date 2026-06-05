@@ -27,8 +27,6 @@ export async function getUserFromRequest(
   req: NextRequest
 ): Promise<User | null> {
   const cookieToken = req.cookies.get("token")?.value;
-  console.log("[AUTH] cookie token:", cookieToken || "no cookie");
-
   if (cookieToken) {
     const decoded = verifyToken(cookieToken) as JwtPayload;
 
@@ -49,29 +47,25 @@ export async function getUserFromRequest(
   return null;
 }
 
-export function withErrorHandling<T = {}>(
+export function withErrorHandling<T = Record<string, string>>(
   handler: (req: NextRequest, context?: Context<T>) => Promise<NextResponse>
 ) {
   return async (req: NextRequest, context?: Context<T>) => {
     try {
       return await handler(req, context);
     } catch (err) {
-      if (err instanceof Error) {
-        console.error(`${req.method} ${req.url} error:`, err.message);
-      } else {
-        console.error(`${req.method} ${req.url} unknown error`, err);
-      }
+      console.error(`${req.method} ${req.url} error:`, err);
       return errorResponse("Internal server error", 500);
     }
   };
 }
 
-export async function requireUser(req: NextRequest): Promise<User> {
-  const user = await getUserFromRequest(req);
-
-  if (!user) {
-    throw { status: 401, message: "Unauthorized" };
-  }
-
-  return user;
+export function withAuth<T = Record<string, string>>(
+  handler: (req: NextRequest, user: User, context?: Context<T>) => Promise<NextResponse>
+) {
+  return withErrorHandling<T>(async (req: NextRequest, context?: Context<T>) => {
+    const user = await getUserFromRequest(req);
+    if (!user) return errorResponse("Unauthorized", 401);
+    return handler(req, user, context);
+  });
 }

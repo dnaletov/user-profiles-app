@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  withErrorHandling,
-  requireUser,
-  errorResponse,
-} from "../../../lib/apiHelpers";
+import { withErrorHandling, withAuth, errorResponse } from "../../../lib/apiHelpers";
 import { getProfiles, createProfile } from "../../../lib/profileService";
 
 export const GET = withErrorHandling(async () => {
@@ -11,8 +7,7 @@ export const GET = withErrorHandling(async () => {
   return NextResponse.json(profiles);
 });
 
-export const POST = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireUser(req);
+export const POST = withAuth(async (req: NextRequest, user) => {
   const data = await req.json();
 
   if (!data.firstName || !data.lastName || !data.birthDate)
