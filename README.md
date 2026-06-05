@@ -1,5 +1,9 @@
 # User Profiles App
 
+A full-stack web application for managing user profiles, built as a portfolio project to demonstrate code quality — since most of my professional work is covered by NDA.
+
+The app includes JWT-based authentication, profile CRUD with photo uploads via Cloudinary, a rich text editor, and multilingual support. Built with **Next.js 16 (App Router)**, **TypeScript**, **Prisma**, **PostgreSQL**, and **Tailwind CSS**, and deployed on Vercel.
+
 **Live demo**: https://user-profiles-app-three.vercel.app
 
 # Quick Start

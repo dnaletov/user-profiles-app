@@ -19,7 +19,7 @@ export const ProfileDetails = ({
   if (variant === "card") {
     return (
       <>
-        <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden">
+        <div className="relative w-full h-56 mb-2 rounded-lg overflow-hidden">
           <Image
             src={profile.photo || noPhotoImg}
             alt={profile.photo ? "profile photo" : t("noPhoto")}
@@ -31,7 +31,7 @@ export const ProfileDetails = ({
         </div>
         <div>
           <h2 className="text-xl font-semibold truncate">{fullName}</h2>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500">
             <span className="font-medium text-gray-700 mr-1">{t("birthday")}:</span>
             {formatDate(profile.birthDate)}
           </p>

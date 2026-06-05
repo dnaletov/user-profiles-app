@@ -30,7 +30,7 @@ export default function LogoutButton() {
         loading={loading}
         className="px-4 py-2 min-w-[120px]"
       >
-        {loading ? t("loggingOut") : t("logout")}
+        {t("logout")}
       </Button>
       <Modal
         open={showConfirm}
