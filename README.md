@@ -1,3 +1,7 @@
+# User Profiles App
+
+**Live demo**: https://user-profiles-app-three.vercel.app
+
 # Quick Start
 
 1. Clone project:
@@ -16,7 +20,7 @@ npm install
 3. Create a `.env` file in the root of the project:
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://..."
 JWT_SECRET="your_secret"
 CLOUDINARY_NAME=your_cloudinary_name
 CLOUDINARY_KEY=your_cloudinary_key
