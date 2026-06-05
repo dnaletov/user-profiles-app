@@ -24,10 +24,12 @@ export default function AuthForm({
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     try {
       await onSubmit(email, password);
@@ -39,6 +41,8 @@ export default function AuthForm({
       } else {
         setError("Something went wrong");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,7 +76,7 @@ export default function AuthForm({
           />
         </div>
 
-        <Button type="submit" fullWidth>
+        <Button type="submit" fullWidth loading={isLoading}>
           {submitText}
         </Button>
 

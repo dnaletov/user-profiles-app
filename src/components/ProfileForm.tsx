@@ -18,7 +18,7 @@ interface Props {
     birthDate: string;
     photo?: string;
     description?: string;
-  }) => void;
+  }) => void | Promise<void>;
   submitLabel?: string;
 }
 
@@ -34,8 +34,9 @@ const ProfileForm: React.FC<Props> = ({
   const [photo, setPhoto] = useState(initialData.photo || "");
   const [description, setDescription] = useState(initialData.description || "");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -65,7 +66,12 @@ const ProfileForm: React.FC<Props> = ({
       return;
     }
 
-    onSubmit({ firstName, lastName, birthDate, photo, description });
+    setIsLoading(true);
+    try {
+      await onSubmit({ firstName, lastName, birthDate, photo, description });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,7 +97,7 @@ const ProfileForm: React.FC<Props> = ({
         max={new Date().toISOString().split("T")[0]}
       />
       <RichTextEditor value={description} onChange={setDescription} />
-      <Button type="submit" fullWidth>
+      <Button type="submit" fullWidth loading={isLoading}>
         {submitLabel || t("save")}
       </Button>
       {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
