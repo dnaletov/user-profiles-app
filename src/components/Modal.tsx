@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "./ui";
@@ -28,6 +29,16 @@ export default function Modal({
   const { t } = useTranslation();
   const finalConfirmText = confirmText || t("yes");
   const finalCancelText = cancelText || t("no");
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   if (!open) return null;
 
   return createPortal(
@@ -36,7 +47,7 @@ export default function Modal({
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-lg p-6 shadow-xl w-80 relative animate-fade-in max-h-[80vh] overflow-y-auto"
+        className="bg-white rounded-lg p-6 shadow-xl w-full max-w-sm sm:max-w-md relative animate-fade-in max-h-[80vh] overflow-y-auto mx-4 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         onClick={(e) => e.stopPropagation()}
       >
         <Button
