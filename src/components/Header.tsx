@@ -7,7 +7,6 @@ import { Button } from "./ui";
 
 export default function Header() {
   const { language, toggleLanguage } = useLanguage();
-  
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
       <nav className="container mx-auto flex justify-between items-center px-4 py-3">
@@ -19,8 +18,8 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             onClick={toggleLanguage}
             className="w-12 font-bold"
           >

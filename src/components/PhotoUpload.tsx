@@ -4,6 +4,8 @@ import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { Upload, Loader2, Trash2 } from "lucide-react";
+import { Button } from "./ui";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface PhotoUploadProps {
   value?: string | null;
@@ -12,6 +14,7 @@ interface PhotoUploadProps {
 
 export default function PhotoUpload({ value, onChange }: PhotoUploadProps) {
   const [uploading, setUploading] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   const upload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
@@ -56,20 +59,19 @@ export default function PhotoUpload({ value, onChange }: PhotoUploadProps) {
         )}
 
         {value && !uploading && (
-          <button
-            type="button"
+          <Button
             onClick={removePhoto}
-            className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:bg-red-100"
-            title="Remove photo"
+            variant="transparent"
+            className="absolute top-0 right-0"
           >
             <Trash2 className="w-4 h-4 text-red-500" />
-          </button>
+          </Button>
         )}
       </div>
 
       <label className="flex items-center gap-2 cursor-pointer bg-gray-100 hover:bg-gray-200 px-3 py-2 text-sm rounded-lg w-fit">
         <Upload className="w-4 h-4" />
-        Upload Photo
+        {t("uploadPhoto")}
         <input
           type="file"
           accept="image/*"

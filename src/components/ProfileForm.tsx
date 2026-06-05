@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import RichTextEditor from "./RichTextEditor";
 import PhotoUpload from "./PhotoUpload";
 import { Input, Button } from "./ui";
@@ -35,16 +35,6 @@ const ProfileForm: React.FC<Props> = ({
   const [description, setDescription] = useState(initialData.description || "");
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (initialData) {
-      setFirstName(initialData.firstName || "");
-      setLastName(initialData.lastName || "");
-      setBirthDate(initialData.birthDate || "");
-      setPhoto(initialData.photo || "");
-      setDescription(initialData.description || "");
-    }
-  }, [initialData]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -66,8 +56,12 @@ const ProfileForm: React.FC<Props> = ({
       return;
     }
 
-    if ((firstName + lastName).length > 20) {
-      setError(t("errorNameLength"));
+    if (firstName.length > 20) {
+      setError(t("errorFirstNameLength"));
+      return;
+    }
+    if (lastName.length > 20) {
+      setError(t("errorLastNameLength"));
       return;
     }
 

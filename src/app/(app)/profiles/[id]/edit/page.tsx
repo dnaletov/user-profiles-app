@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import ProfileForm from "@/components/ProfileForm";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
@@ -18,28 +17,25 @@ export default function EditProfilePage() {
 
   const { profile, loading, error: fetchError } = useProfile(id);
   const { t } = useTranslation();
-  
   const { error: updateError, execute } = useApi<ProfileData>();
-  const [initialData, setInitialData] = useState<Partial<ProfileData>>({});
-
-  useEffect(() => {
-    if (profile) {
-      setInitialData({
+  const formInitialData = profile
+    ? {
         firstName: profile.firstName,
         lastName: profile.lastName,
         birthDate: formatDateForInput(profile.birthDate),
         photo: profile.photo || "",
         description: profile.description || "",
-      });
-    }
-  }, [profile]);
+      }
+    : undefined;
 
   const handleSubmit = async (data: ProfileData) => {
     if (!id) return;
 
     try {
       await execute(() =>
-        axios.put(API_ROUTES.PROFILES.BY_ID(id), data, { withCredentials: true })
+        axios.put(API_ROUTES.PROFILES.BY_ID(id), data, {
+          withCredentials: true,
+        }),
       );
       router.push(APP_ROUTES.PROFILES.LIST);
     } catch (err) {
@@ -52,10 +48,11 @@ export default function EditProfilePage() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">{t("edit")} Profile</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("edit")}</h1>
       {updateError && <p className="text-red-500 mb-2">{updateError}</p>}
       <ProfileForm
-        initialData={initialData}
+        key={id}
+        initialData={formInitialData}
         onSubmit={handleSubmit}
         submitLabel={t("saveChanges")}
       />

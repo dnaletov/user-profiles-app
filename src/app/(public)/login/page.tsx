@@ -17,7 +17,7 @@ export default function LoginPage() {
       { email, password },
       { withCredentials: true }
     );
-    router.push("/profiles");
+    router.replace("/profiles");
   };
 
   return (
